@@ -1,0 +1,47 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ title }} - Мой блог{% endblock %}
+
+{% block content %}
+<section class="guestbook">
+    <h2>Книга отзывов</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="review-form">
+        <h3>Оставить отзыв</h3>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="error">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn-submit">Отправить отзыв</button>
+        </form>
+    </div>
+
+    <div class="reviews-list">
+        <h3>Отзывы</h3>
+        {% for review in reviews %}
+        <div class="review-item">
+            <div class="review-author">{{ review.full_name }}</div>
+            <div class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</div>
+            <div class="review-text">{{ review.text }}</div>
+        </div>
+        {% empty %}
+        <p>Пока нет проверенных отзывов. Будьте первым!</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
